@@ -1,0 +1,10 @@
+This repo contains the source for several libraries developed over the years (as early as 1990).
+These libraries support various tools, and have been included/used by other open source 
+projects. The license in 'LICENSE' applies to all files contained in this repo unless a specific
+licence, or ammendment is noted inside of a particular file. 
+
+Libraries:
+	si -- Socket Interface -- a library which acts as a TCP/UDP daemon providing a callback
+		interface to the user programme
+
+	sissl -- An SSL interface extension to the si library
