@@ -1,16 +1,18 @@
 #  Master file included by all mkfiles in the libs tree
 
-SRC_DIR = `echo ${SRC_ROOT:-..}`
+INC_DIR = `echo ${INC_DIR:-/usr/local/include/sdaniels}`
+LIB_DIR = `echo ${LIB_DIR:-/usr/local/lib/sdaniels}`
+
+#SRC_DIR = `echo ${SRC_ROOT:-..}`
 MKSHELL = /bin/ksh
-CC = gcc
-IFLAGS = -I. -I$SRC_DIR/include
-CFLAGS = -g
+CC = `echo ${CC:-gcc}`
+
+IFLAGS = `echo -I. -I$INC_DIR $IFLAGS`
+CFLAGS = ${CFLAGS:--g}
 LFLAGS = 
-TARGET_BIN=`echo ${TARGET_BIN:-$HOME/bin}`
+BIN_DIR=`echo ${BIN_DIR:-$HOME/bin}`
 
 NUKE = *.o *.a  *.eps *.png
-
-backup_dir = $HOME/backup
 
 # ===========================================================================
 
@@ -53,12 +55,37 @@ backup_dir = $HOME/backup
 
 all:V:	$ALL
 
-nuke:
+help:VQ:
+	cat <<endKat
+	Export any of the following variables to override mkfile settings: 
+		LIB_DIR -- directory path where libraries are published    (/usr/local/lib/sdaniels/)
+		INC_DIR -- directory path where header files are published (/usr/include/lib/sdaniels/)
+		BIN_DIR -- directory where binaries are installed			($HOME/bin)
+		CC      -- C compiler to use (gcc)
+		CFLAGS  -- flags to pass on CC command line (-g)
+		IFLAGS  -- any include flags to be added after "-I. -I $INC_DIR"
+		
+		
+	Execute:
+	    "mk publish" to publish libraries and header files in $LIB_DIR and $INC_DIR
+	    "mk install" to build and install binaries in $BIN_DIR
+	    "mk clean"   to perform a non-exhaustive reset in the current directory
+	    "mk nuke"    to performa an exhaustive reset in the current directory
+		
+	See the mkfile in this direcory for specific targets
+	endKat
+
+clean:VQ:
+	if [[ -n $CLEAN ]]
+	then
+		rm -f $CLEAN
+	fi
+
+nuke:VQ:
 	rm -f $NUKE
 
-
 # anything on the install list, of the form [path/]source[:[path/]target]
-install:QV:
+install:QV: publish
 	for x in $INSTALL
 	do
 		source=${x%%:*}
@@ -66,12 +93,12 @@ install:QV:
 		then
 			target=${x##*:}
 		else
-			target=$TARGET_BIN/${source##*/}
+			target=$BIN_DIR/${source##*/}
 		fi
 	
 		if [[ -d $target ]]
 		then
-			target=${target:-$TARGET_BIN}/${source##*/}
+			target=${target:-$BIN_DIR}/${source##*/}
 		fi
 	
 		if [[ -f $target ]]
@@ -84,14 +111,3 @@ install:QV:
 		chmod 775 $target
 		ls -al $target
 	done
-
-# ---------------- making of backup stuff ------------------------
-tar_contents=`ls *.c *.h *.ksh *.java mkfile $ADD2BACKUP 2>/dev/null`
-tarf=`echo ${PWD##*/}.tgz`
-$tarf::	$tar_contents
-	tar -cf - ${tar_contents:-foo} | gzip -c >$tarf
-
-tar:V:	$tarf
-backup:QV:	$tarf
-	ls -al $tarf
-	mv $tarf $backup_dir
