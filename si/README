@@ -1,0 +1,17 @@
+
+si is a socket library written more than 20 years ago (1995) to supoprt DOS based applications
+which needed to manage communications via TCP or UDP.  Over the years it has beem extended to 
+support IPv6, and multicast, but little else (other than bug fixes) has changed.  It's a callback
+oriente library meaning that the user programme initialises, registers call back functions for 
+data, connections, etc. and then invokes the SIwait() function to 'drive.'   
+
+The sitest.c programme can be used as an example, and can be built to test the library. 
+
+Requirements:
+	mk -- plan-9's version of make by Andrew Hume. 
+	
+
+Building:
+	If mk is installed, then just mk should build.  By default 'mk publish' will push the resulting
+library into /usr/local/lib/sdaniels. You can override this with environment variables.  'mk help' will
+list the variables that can be set.

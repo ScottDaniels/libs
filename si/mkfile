@@ -1,0 +1,47 @@
+# plan-9 based mkfile
+
+# things that are compiled and left as obj
+src = siaddres sibldpol sicbreg sicbstat siclose siconnec siestabl \
+	sigetadd siinit sinew sinewses sipoll sircv sireinit sisend \
+	sisendt sisendu sisetsig sishutdo sisignal siterm siwait sigetname silisten \
+	sitrash
+
+headers = siconst socket_if sisetup sistruct
+
+
+MKSHELL=ksh
+
+CFLAGS = 
+ALL = libsi.a
+
+< ../master.mk
+NUKE = $NUKE sitest
+
+libs =  -L./ -lsi
+
+${src:%=%.o}:       ${headers:%=%.h}
+libsi.a(%.o):N:	%.o
+libsi.a:    ${src:%=libsi.a(%.o)}
+	(
+		names="${newprereq//libsi.a\(}"                       # pluck off lib.*( from each in newprereq
+		ar r $target ${names//\)/} #&& rm ${names//\)/}   # archive and remove after ditching trailing ) from each name
+	)
+
+$LIB_DIRlib_target/libsi.a:: libsi.a
+	if [[ ! -d $LIB_DIR ]]
+	then
+		mkdir $LIB_DIR
+	fi
+	cp libsi.a $LIB_DIR/
+
+$INC_DIR/socket_if.h:: socket_if.h
+	if [[ ! -d $INC_DIR ]]
+	then
+		mkdir $INC_DIR
+	fi
+	cp socket_if.h $INC_DIR/
+
+publish:V:	$lib_target/libsi.a $inc_target/socket_if.h
+
+sitest:: sitest.o libsi.a
+	cc $CFLAGS sitest.c -L. -lsi  -o sitest
