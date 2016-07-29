@@ -50,12 +50,12 @@
 *			replace SIinit())
 **************************************************************************
 */
-#define INTERNAL 1        /* This object owns any global variables */
+#define _SI_ERRNO			// prevent our global errnor number from being declared in sisetup.h
 
 #include  "sisetup.h"     /* get the setup stuff */
 
 
-/* this routine "owns" the global variables */
+								/* this routine "owns" the global variables */
 int deaths = 0;              /* deaths that the parent is not aware of */
 int sigflags = 0;            /* signal processing flags SF_ constants */
 int SIerrno;                 /* external error number for caller to use */

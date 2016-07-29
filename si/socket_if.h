@@ -40,6 +40,9 @@
 *****************************************************************************
 */
 
+#ifndef _SOCKET_IF_H
+#define _SOCKET_IF_H
+
 #define TCP_DEVICE	0     	/* device type of socket */
 #define UDP_DEVICE	1	
 
@@ -112,7 +115,7 @@
 #define SI_ERR_ADDR    	17       /* address conversion failed */
 
 
-#ifndef INTERNAL
+#ifndef _SI_ERRNO
 extern int SIerrno;               /* error number set by public routines */
 #endif
 
@@ -140,3 +143,5 @@ extern int SIsendu( char *abuf, char *ubuf, int ulen );
 extern void SIsetsig( int sigs );
 extern void SItrash( int type, void *bp );
 extern int SIwait( void );
+
+#endif
