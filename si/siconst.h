@@ -88,5 +88,6 @@ extern struct tp_blk *SIestablish( int type, char *abuf, int family );
 extern void *SInew( int type );
 extern int SInewsession( struct tp_blk *tpptr );
 extern void SIsend( struct tp_blk *tpptr );
+extern void SIshutdown( struct ginfo_blk *gptr );
 extern void SIsignal( int sig );
 extern void SIterm( struct tp_blk *tpptr );

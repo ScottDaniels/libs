@@ -133,7 +133,7 @@ extern int SIinitialise( int opts )
 		}                   /* end if gptr->ctab ok */
 		else                 /* if call back table allocation failed - error off */
 		{
-			SIshutdown( );  /* clean up any open fds */
+			SIshutdown( gptr );  /* clean up any open fds */
 			free( gptr );
 			gptr = NULL;       /* dont allow them to continue */
 		}
@@ -169,7 +169,7 @@ extern int SIinit( int opts, int tport, int uport )
 
 		if( status == ERROR )         /* if an establish failed or wrong port */
 		{
-			SIshutdown( );           /* clean up the list */
+			SIshutdown( gptr );           /* clean up the list */
 			free( gptr );
 			return 0;             /* get out now with an error to user */
 		}

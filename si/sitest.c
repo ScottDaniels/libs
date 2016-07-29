@@ -121,10 +121,9 @@ int main( int argc, char **argv )
  SIcbreg( SI_CB_RDATA, &cbraw, NULL );
 
  printf( "test: Waiting....\n" );
- while( (status = SIpoll( 500 )) >= 0 );
- /*status = SIwait(  );*/
+ //while( (status = SIpoll( 500 )) >= 0 );
+ status = SIwait(  );
 
- SIshutdown(  );          /* for right now just shutdown */
  printf( "returned from siwait status = %d sierr =%d errno=%d(%s)\n", status, SIerrno, errno, errno > 0 ? strerror( errno ) : "[OK]" );
 }              /* main */
 

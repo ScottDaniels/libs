@@ -43,10 +43,14 @@
 */
 #include "sisetup.h"                   /* get includes and defines */
 
-extern void SIshutdown( void )
-{
-	extern struct ginfo_blk *gptr;
+// it may seem silly tp pass the gpointer into this function since it is, after all, 
+// a global, and even sillier since most of the other functions in the SI package
+// assume it is a global. However, to support the sissl overlay libaray, this 
+// function must accept the pointer because the sissl functions don't make the same
+// global assumption and may be supporting multiple global information structures.
 
+extern void SIshutdown( struct ginfo_blk *gptr )
+{
 	SIerrno = SI_ERR_HANDLE;
 	if( gptr != NULL && gptr->magicnum == MAGICNUM )
 	{

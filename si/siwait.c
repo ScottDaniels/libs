@@ -220,7 +220,7 @@ extern int SIwait( )
   {
    SIerrno = SI_ERR_SHUTD;             /* indicate error exit status */
    status = ERROR;                /* status should indicate to user to die */
-   SIshutdown( );            /* clean things up */
+   SIshutdown( gptr );            /* clean things up */
   }                          /* end if shutdown */
  else
   status = OK;               /* user can continue to process */

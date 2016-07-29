@@ -141,7 +141,7 @@ extern int SIrcv( int sid, char *buf, int buflen, char *abuf, int delay )
 
  if( gptr->flags & GIF_SHUTDOWN  &&  gptr->tplist != NULL )
   {             /* shutdown received but sessions not cleaned up */
-   SIshutdown( );
+   SIshutdown( gptr );
    status = SI_ERROR;                /* indicate failure on return */
   }                                  /* end if shut but not clean */
  else                                /* if not in shutdown see if */

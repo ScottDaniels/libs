@@ -197,7 +197,7 @@ extern int SIpoll( int msdelay )
   {
    SIerrno = SI_ERR_SHUTD;        /* indicate error exit status */
    status = ERROR;                /* status should indicate to user to die */
-   SIshutdown( );            /* clean things up */
+   SIshutdown( gptr );            /* clean things up */
   }
  else
   status = OK;                    /* user can continue to process */

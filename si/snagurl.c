@@ -81,7 +81,7 @@ int main( int argc, char **argv )
  printf( "test: Waiting....\n" );
  status = SIwait(  );
 
- SIshutdown(  );          /* for right now just shutdown */
+ SIshutdown(  gptr );          /* for right now just shutdown */
  printf( "returned from siwait status = %d sierr =%d errno=%d(%s)\n", status, SIerrno, errno, strerror( errno ) );
 }              /* main */
 

@@ -138,6 +138,5 @@ extern int SIreinit( int fd );
 extern int SIsendt( int fd, char *ubuf, int ulen );
 extern int SIsendu( char *abuf, char *ubuf, int ulen );
 extern void SIsetsig( int sigs );
-extern void SIshutdown( void );
 extern void SItrash( int type, void *bp );
 extern int SIwait( void );
