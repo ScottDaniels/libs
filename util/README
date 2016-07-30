@@ -2,13 +2,19 @@
 A collection of small utilities which build into libut.a.
 	ut.h			header file w/ prototypes
 
-	base64 			encode/decode functions
-	sha1			encode functions
+	base64 			base64 encode/decode functions
+	sha1			sha-256 encode functions
 	tokenise 		string tokeniser
 	websocket		basic websocket interface
-	websocket_ssl	baseic websocekt interface supporting ssl
+	websocket_ssl	basic websocekt interface supporting ssl
 
 
 Requirements when linking with this libary:
 	open-ssl development
 	ghc-cryptohash-sha256-devel (sha356 development of some kind)
+
+
+Most of the modles in this libary have a 'self test' bit of code
+such that when the module is compiled directly (e.g. mk sha1) the
+resulting binary is a small test of the functions found in the 
+module.
