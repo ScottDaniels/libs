@@ -1,4 +1,4 @@
-# plan-9 based mkfile
+# plan-9 mk mkfile
 
 # things that are compiled and left as obj
 src = siaddres sibldpol sicbreg sicbstat siclose siconnec siestabl \
@@ -27,21 +27,23 @@ libsi.a:    ${src:%=libsi.a(%.o)}
 		ar r $target ${names//\)/} #&& rm ${names//\)/}   # archive and remove after ditching trailing ) from each name
 	)
 
-$LIB_DIRlib_target/libsi.a:: libsi.a
+$LIB_DIR:Q:
 	if [[ ! -d $LIB_DIR ]]
 	then
 		mkdir $LIB_DIR
 	fi
-	cp libsi.a $LIB_DIR/
 
-$INC_DIR/socket_if.h:: socket_if.h
+ $INC_DIR:Q:
 	if [[ ! -d $INC_DIR ]]
 	then
 		mkdir $INC_DIR
 	fi
-	cp socket_if.h $INC_DIR/
+	
 
-publish:V:	$lib_target/libsi.a $inc_target/socket_if.h
+# always out of date
+publish:V: libsi.a  $INC_DIR $LIB_DIR
+	cp libsi.a $LIB_DIR/
+	cp socket_if.h $INC_DIR/
 
 sitest:: sitest.o libsi.a
 	cc $CFLAGS sitest.c -L. -lsi  -o sitest
