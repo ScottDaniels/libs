@@ -1,0 +1,64 @@
+# utility mk file (plan-9)
+
+# must be set in EVERY mkfile AND in master.mk -- erk.
+MKSHELL = ksh		
+
+# these must be set before master is pulled in
+#
+ALL = libraries
+
+< ../master.mk
+
+utlib = libut$gflag.a
+
+libraries:N:	$utlib
+
+public_headers = ut.h
+utsrc = tokenise websocket websocket_ssl sha1 base64 
+$utlib(%.o):N:    %.o
+$utlib:   ${utsrc:%=$utlib(%.o)} 
+	ksh '(
+	set -e
+	names="${newprereq//$utlib\(}"					# pluck off lib.*( from each in newprereq
+	ar r $utlib ${names//\)/} && rm ${names//\)/}	# archive and remove after ditching trailing ) from each name
+	ranlib $utlib ||true
+	)'
+
+$LIB_DIR/sdaniels:Q:
+	if [[ ! -d $LIB_DIR ]]
+	then
+		mkdir -p $LIB_DIR/sdaniels
+	fi
+
+ $INC_DIR/sdaniels:Q:
+	if [[ ! -d $INC_DIR ]]
+	then
+		mkdir -p $INC_DIR/sdaniels
+	fi
+	
+
+# always out of date
+publish:V: libut.a  $INC_DIR/sdaniels $LIB_DIR/sdaniels
+	cp libut.a $LIB_DIR/sdaniels/
+	cp $public_headers $INC_DIR/sdaniels/
+
+
+# ----------------- self tests -----------------------------------
+base64::	base64.c
+	gcc -DXSELF_TEST -g base64.c -o base64 -lssl -L. -lut -lcrypto
+
+sha1::	sha1.c
+	gcc -DSELF_TEST -g sha1.c -o sha1 -lssl -L. -lut -lcrypto
+
+tokenise::	tokenise.c
+	gcc -DSELF_TEST tokenise.c -o tokenise -L. -lut 
+
+websocket::	websocket.c
+	gcc $IFLAGS $CFLAGS -DUSESSL=0 -DSELF_TEST -g websocket.c -o websocket  -L. -lut -lssl -L$LIB_DIR/sdaniels  -lsi -lcrypto
+
+websocket_ssl::	websocket.c
+	gcc $IFLAGS $CFLAGS -DUSESSL=1 -DSELF_TEST -g websocket.c -o websocket_ssl -L. -lut -lssl -L$LIB_DIR/sdaniels  -lsi -lcrypto
+
+verify::
+	echo $LD_LIBRARY_PATH
+
