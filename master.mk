@@ -9,7 +9,7 @@ CC = `echo ${CC:-gcc}`
 
 IFLAGS = `echo -I. -I$INC_DIR $IFLAGS`
 CFLAGS = ${CFLAGS:--g}
-LFLAGS = 
+LFLAGS = -L $LIB_DIR
 BIN_DIR=`echo ${BIN_DIR:-$HOME/bin}`
 
 NUKE = *.o *.a  *.eps *.png
