@@ -62,5 +62,5 @@
 #include "siconst.h"          /* our constants */
 #include "sistruct.h"         /* our structure definitions */
 
-#include <socket_if.h>        // constants and prototypes from the si package (assumed published in /usr/local/lib/sdaniels or similar)
+#include <sdaniels/socket_if.h>        // constants and prototypes from the si package (assumed published in /usr/local/lib/sdaniels or similar)
 #include "sissl.h"				// ssl specific constants and prototypes	

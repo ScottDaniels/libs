@@ -35,6 +35,7 @@
 
 #include "siconst.h"
 #include "sidefs.h"
+#include <sdaniels/socket_if.h>
 #include "sissl.h"
 
 #define EOS '\000'

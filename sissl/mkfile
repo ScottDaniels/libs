@@ -32,8 +32,8 @@ libsissl.a:    ${src:%=libsissl.a(%.o)}
 
 # always out of date
 publish:V: libsissl.a  $INC_DIR $LIB_DIR
-	cp libsissl.a $LIB_DIR/
-	cp sissl.h $INC_DIR/
+	cp libsissl.a $LIB_DIR/sdaniels/
+	cp sissl.h $INC_DIR/sdaniels
 
 sissl_test:: sissl_test.o libsissl.a
 	cc $CFLAGS $IFLAGS  sissl_test.c  -L . -lsissl $LFLAGS  -lsi -lssl -lcrypto

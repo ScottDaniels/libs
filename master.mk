@@ -1,14 +1,15 @@
 #  Master file included by all mkfiles in the libs tree
 
-INC_DIR = `echo ${INC_DIR:-/usr/local/include/sdaniels}`
-LIB_DIR = `echo ${LIB_DIR:-/usr/local/lib/sdaniels}`
+INC_DIR = `echo ${INC_DIR:-/usr/local/include}`
+LIB_DIR = `echo ${LIB_DIR:-/usr/local/lib}`
 
+LD_LIBRARY_PATH = `echo $LIB_DIR/sdaniels:$LD_LIBRARY_PATH`
 #SRC_DIR = `echo ${SRC_ROOT:-..}`
 MKSHELL = /bin/ksh
 CC = `echo ${CC:-gcc}`
 
-IFLAGS = `echo -I. -I$INC_DIR $IFLAGS`
-CFLAGS = ${CFLAGS:--g}
+IFLAGS = `echo -I. -I${INC_DIR%/*} $IFLAGS`
+CFLAGS = `echo ${CFLAGS:--g}`
 LFLAGS = -L $LIB_DIR
 BIN_DIR=`echo ${BIN_DIR:-$HOME/bin}`
 

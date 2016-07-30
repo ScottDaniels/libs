@@ -27,23 +27,23 @@ libsi.a:    ${src:%=libsi.a(%.o)}
 		ar r $target ${names//\)/} #&& rm ${names//\)/}   # archive and remove after ditching trailing ) from each name
 	)
 
-$LIB_DIR:Q:
-	if [[ ! -d $LIB_DIR ]]
+$LIB_DIR/sdaniels:Q:
+	if [[ ! -d $LIB_DIR/sdaniels ]]
 	then
-		mkdir $LIB_DIR
+		mkdir -p $LIB_DIR/sdaniels
 	fi
 
- $INC_DIR:Q:
-	if [[ ! -d $INC_DIR ]]
+ $INC_DIR/sdaniels:Q:
+	if [[ ! -d $INC_DIR/sdaniels ]]
 	then
-		mkdir $INC_DIR
+		mkdir -p $INC_DIR/sdaniels
 	fi
 	
 
 # always out of date
 publish:V: libsi.a  $INC_DIR $LIB_DIR
-	cp libsi.a $LIB_DIR/
-	cp socket_if.h $INC_DIR/
+	cp libsi.a $LIB_DIR/sdainels/
+	cp socket_if.h $INC_DIR/sdaniels/
 
 sitest:: sitest.o libsi.a
 	cc $CFLAGS sitest.c -L. -lsi  -o sitest

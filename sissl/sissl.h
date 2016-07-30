@@ -5,8 +5,7 @@
 #ifndef _SISSL_H
 #define _SISSL_H
 
-#include <socket_if.h>
- 									/* connection cert failure tolerence levels passed to siconnect() */
+ 										/* connection cert failure tolerence levels passed to siconnect() */
 #define	SISSL_NO_TOLERENCE 0x00			/* no error tolerated;  fail connection on any error */
 #define	SISSL_TOLERATE_INV 0x01			/* tolerate an invalid cert */
 #define	SISSL_TOLERATE_NAME 0x02		/* tolerate a name mismatch */
