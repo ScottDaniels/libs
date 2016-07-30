@@ -1,0 +1,44 @@
+The sissl libary is an 'overlay' library that can be include in front of the 
+si (socket interface) library to provide ssl (TLS) encryption on all sessions.
+The sissl calls are exactly the same as the si calls with only one exception; the
+SIinitialise_ssl() function must be called first when using the sissl library.
+Unfortunately this initialisation needs the user and root cert files (.pem) and 
+thus it's not possible to hide this call into the regular SIinitialise() function 
+without equal amounts of hackery. 
+
+THere are a few extra functions added here that are not a part of the SI package, 
+but these should all be internal and allow most applications to be built in 
+either SSL, or regular, mode without any changes other than what is described 
+below. 
+
+This package requires openssl development. For a link example, see the mkfile
+and how it builds sissl_test.
+
+
+For applications that wish to produce both TLS and non-TLS oriented binaries
+a simple ifdef-ish method can be employed:
+
+1) on the command line define a constant like:  -DUSE_SSL=1 or -DUSE_SSL=0
+
+2) in the code, before the call to SIinitialise() write something like this:
+	#include <sissl.h>
+
+	if( USE_SSL )
+	{
+		/* code to determine the filenames of cert files */
+		SIinitialise_ssl( user_cert, root_cert, tolerence );
+	}
+	
+	SIinitialise( options );
+
+	(most modern compliers, when USE_SSL is zero,  will recoginse the fact that
+	the code will never be executed and will drop the block completely. This is
+	much neater than #ifdef usage.)
+
+3) give both -lsissl and -lsi on the compiler command line listing the si library second. 
+
+
+
+It is always best to verify that the data exchanged between your application and the 
+far side are indeed encrpted. This can be done using any TCP sniffer or scope. 
+

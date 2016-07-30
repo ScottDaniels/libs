@@ -1,0 +1,40 @@
+# Plan-9 mkfile
+
+# things that are compiled and left as obj
+src = siaddres  sibldpol  siconnec  siestabl  siinit  silisten  sinew  sinewses  sisend  sisendt  sissl_test  siwait
+
+old_src = siaddres sibldpol sicbreg sicbstat siclose siconnec siestabl \
+	sigetadd siinit sinew sinewses siopen sipoll sircv sireinit sisend \
+	sisendt sisendu sisetsig sishutdo sisignal siterm siwait sigetname silisten \
+	sitrash
+
+headers =  siconst sidefs sisetup sistruct sissl
+
+
+MKSHELL=ksh
+what=si
+bkup = 
+
+CFLAGS = 
+ALL = libsissl.a
+
+< ../master.mk
+
+libs =  -L./ -lsi
+
+${src:%=%.o}:       ${headers:%=%.h}
+libsissl.a(%.o):N:	%.o
+libsissl.a:    ${src:%=libsissl.a(%.o)}
+	(
+		names="${newprereq//libsissl.a\(}"                       # pluck off lib.*( from each in newprereq
+		ar r $target ${names//\)/} #&& rm ${names//\)/}   # archive and remove after ditching trailing ) from each name
+	)
+
+# always out of date
+publish:V: libsissl.a  $INC_DIR $LIB_DIR
+	cp libsissl.a $LIB_DIR/
+	cp sissl.h $INC_DIR/
+
+sissl_test:: sissl_test.o libsissl.a
+	cc $CFLAGS $IFLAGS  sissl_test.c  -L . -lsissl $LFLAGS  -lsi -lssl -lcrypto
+
