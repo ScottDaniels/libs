@@ -51,6 +51,7 @@
 *            19 Apr 1995 - To call do key to do better keyboard editing
 *            18 Aug 1995 - To init kstat to 0 to prevent key hold if
 *                          network data pending prior to entry.
+*			31 Jul 2016 - Major formatting clean up in the main while loop.
 **************************************************************************
 */
 #include  "sisetup.h"     /* get the setup stuff */
@@ -92,7 +93,7 @@ extern int SIwait( )
   {
    SIbldpoll( gptr );                 /* build the fdlist for poll */
    pstat = select( gptr->fdcount, &gptr->readfds, &gptr->writefds,
-                   &gptr->execpfds, NULL ); 
+                   &gptr->execpfds, NULL );
 
    if( (pstat < 0 && errno != EINTR) || (sigflags & SI_SF_QUIT) )
     {                             /* poll fail or termination signal rcvd */
@@ -137,80 +138,56 @@ extern int SIwait( )
 
 	
      /*for( tpptr = gptr->tplist; tpptr != NULL; tpptr = tpptr->next )*/
-     for( tpptr = gptr->tplist; tpptr != NULL; tpptr = nextone )
-      {
-	nextone = tpptr->next;				/* prevent issues if we delete the block during loop */
-	if( tpptr->fd >= 0 )
-	{
+     for( tpptr = gptr->tplist; tpptr != NULL; tpptr = nextone ) {
+		nextone = tpptr->next;				/* prevent issues if we delete the block during loop */
+		if( tpptr->fd >= 0 ) {
        		if( tpptr->squeue != NULL && (FD_ISSET( tpptr->fd, &gptr->writefds )) )
         		SIsend( tpptr );              /* send if clear to send */
 
        		if( FD_ISSET( tpptr->fd, &gptr->execpfds ) )
         	{
-         		;  /* sunos seems to set the except flag for unknown reasons */
-#ifdef NEVER
-        		 if( (cbptr = gptr->cbtab[SI_CB_DISC].cbrtn) != NULL )
-          		{
-           			status = (*cbptr)( gptr->cbtab[SI_CB_DISC].cbdata, tpptr->fd );
-           			SIcbstat( status, SI_CB_DISC );    /* handle status */
-          		}
-         		SIterm( tpptr );
-#endif
-        	}
-      		else
-       			if( FD_ISSET( tpptr->fd, &gptr->readfds ) )  /* read event pending? */
-        		{
-         			fd = tpptr->fd;                     /* quick ref to the fd */
+				;  				// sunos seems to set the except flag for unknown reasons; ignore it
+			} else {
+				if( FD_ISSET( tpptr->fd, &gptr->readfds ) ) {  /* read event pending? */
+					fd = tpptr->fd;                     /* quick ref to the fd */
 
-	 			if( tpptr->flags & TPF_LISTENFD )     /* listen port setup by init? */
-	  			{                                    /* yes-assume new session req */
-           				errno=0;
-	   				status = SInewsession( tpptr );    /* make new session */
-	  			}
-	 			else                     /* data received on a regular port */
-	  				if( tpptr->type == SOCK_DGRAM )   /* udp socket? */
-	   				{
-            					addrlen = sizeof( *uaddr );
-	    					status = recvfrom( fd, gptr->rbuf, MAX_RBUF, 0, uaddr, &addrlen );
-	    					if( status > 0 && ! (tpptr->flags & TPF_DRAIN) )
-	     					{                         /* if good status call cb routine */
-	      						if( (cbptr = gptr->cbtab[SI_CB_RDATA].cbrtn) != NULL )
-	       						{
-								SIaddress( uaddr, (void **) &buf, AC_TODOT );
-								status = (*cbptr)( gptr->cbtab[SI_CB_RDATA].cbdata, gptr->rbuf, status, buf );
-								SIcbstat( status, SI_CB_RDATA );    /* handle status */
-								free( buf );
-	       						}
-	     					} 
-	   				}                                  /* end if udp */
-	  				else
-	   				{                                /* else receive on tcp session */
-	    					status = recv( fd, gptr->rbuf, MAX_RBUF, 0 );    /* read data */
-	    					if( status > OK  &&  ! (tpptr->flags & TPF_DRAIN) )
-	     					{
-	      						if( (cbptr = gptr->cbtab[SI_CB_CDATA].cbrtn) != NULL )
-	       						{
-								status = (*cbptr)( gptr->cbtab[SI_CB_CDATA].cbdata,
-					 			fd, gptr->rbuf, status );
-								SIcbstat( status, SI_CB_CDATA );   /* handle cb status */
-	       						}                            /* end if call back was defined */
-	     					}                                     /* end if status was ok */
-            					else
-             					{     /* no bytes read - seems to indicate disc in sunos */
-              						if( (cbptr = gptr->cbtab[SI_CB_DISC].cbrtn) != NULL )
-               						{
-                						status = (*cbptr)( gptr->cbtab[SI_CB_DISC].cbdata, tpptr->fd );
-                						SIcbstat( status, SI_CB_DISC );    /* handle status */
-               						}
-              						SIterm( tpptr );
-             					}
-	   				}                                                /* end tcp read */
-			}                    /* end if event on this fd */
-      		}                      /* end for each fd in the list */
-	}		/* if still good fd */
-    }                        /* end if not in shutdown */
-  }                          /* end while */
- while( gptr->tplist != NULL && !(gptr->flags & GIF_SHUTDOWN) );
+					if( tpptr->flags & TPF_LISTENFD ) {    // new session request
+						errno=0;
+						status = SInewsession( tpptr );    /* make new session */
+					} else  {									/* data received on a regular port */
+						if( tpptr->type == SOCK_DGRAM ) {  		/* udp socket? */
+							addrlen = sizeof( *uaddr );
+							status = recvfrom( fd, gptr->rbuf, MAX_RBUF, 0, uaddr, &addrlen );
+							if( status > 0 && ! (tpptr->flags & TPF_DRAIN) ) {                         /* if good status call cb routine */
+								if( (cbptr = gptr->cbtab[SI_CB_RDATA].cbrtn) != NULL ) {
+									SIaddress( uaddr, (void **) &buf, AC_TODOT );
+									status = (*cbptr)( gptr->cbtab[SI_CB_RDATA].cbdata, gptr->rbuf, status, buf );
+									SIcbstat( status, SI_CB_RDATA );    /* handle status */
+									free( buf );
+								}
+							}
+						} else {										// tcp session
+							status = recv( fd, gptr->rbuf, MAX_RBUF, 0 );    /* read data */
+							if( status > OK  &&  ! (tpptr->flags & TPF_DRAIN) ) {
+								if( (cbptr = gptr->cbtab[SI_CB_CDATA].cbrtn) != NULL ) {
+									status = (*cbptr)( gptr->cbtab[SI_CB_CDATA].cbdata,
+									fd, gptr->rbuf, status );
+									SIcbstat( status, SI_CB_CDATA );   /* handle cb status */
+								}
+							} else { 								    // no bites, but read flagged indicates disconnect
+								if( (cbptr = gptr->cbtab[SI_CB_DISC].cbrtn) != NULL ) {
+									status = (*cbptr)( gptr->cbtab[SI_CB_DISC].cbdata, tpptr->fd );
+									SIcbstat( status, SI_CB_DISC );    /* handle status */
+								}
+								SIterm( tpptr );
+							}
+						} 				/* end tcp read */
+					}
+				}						// end event on this fd
+			}							/* end for each fd in the list */
+		}								/* if still good fd */
+	}                        /* end if not in shutdown */
+  } while( gptr->tplist != NULL && !(gptr->flags & GIF_SHUTDOWN) );
 
  free( ibuf );
  if( gptr->tplist == NULL )        /* indicate all fds closed */
