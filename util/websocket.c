@@ -43,6 +43,7 @@
 *
 *
 *	Mods:		06 Feb 2013 : Added some bullet proofing to reject odd session connection attempts.
+*				31 Jul 2016 : Cleaned up some of the commented out debug statements.
 *
  ---------------------------------------------------------------------------------------------
 */
@@ -301,17 +302,16 @@ static int parse_for_handshake( WS_session *sess, unsigned char *buffer, int len
 		if( *bp < 0x20 )
 			switch( *bp )			/* if termination point isn't an expected character; bail the session */
 			{
-				case 0:
+				case 0:						// good termination of buffer; allow to continue
 				case 0x0d:
 				case 0x0a:
-					//fprintf( stderr, "parse_for: allow buffer to continue \n\n" );
 					break;
 	
 				default:
 					sess->error = 7;
 					sess->key = strdup( "failure-force-disc" );			/* bogus should cause other side to disconnect */
-					cb_disc( ldp, sess->sid );		/* this will drive user's disc callback since handshake has failed */
-					fprintf( stderr, "parse_for: (len=%d) session error: bad/unexpected byte at %d 0x%02x\n", len, bp-buffer, (unsigned int) *bp );
+					cb_disc( ldp, sess->sid );							/* this will drive user's disc callback since handshake has failed */
+					fprintf( stderr, "[ERROR] parse_for: (len=%d) session error: bad/unexpected byte at %d 0x%02x\n", len, bp-buffer, (unsigned int) *bp );
 					return 1;
 					break;
 			}
@@ -449,7 +449,6 @@ static int cb_tdata( void *data, int sid, unsigned char *dgbuffer, int dglen )
 
 	
 		next_frame = bp + flen;
-		//fprintf( stderr, ">>>websock/tdata: processing frame flen=%d  dglen=%d > tlen=%d\n", iflen, dglen, (bp - buffer) + flen );
 
 		switch( opcode )
 		{
@@ -483,7 +482,6 @@ static int cb_tdata( void *data, int sid, unsigned char *dgbuffer, int dglen )
 				{
 					if( usr_cb_msg != NULL )
 					{
-						//fprintf( stderr, "ws_tcp driving callback with data received from %d, %d bytes (%s)\n", sp->sid, iflen, sp->buf );
 						usr_cb_msg( sp->sid, sp->buf, iflen, usr_cb_data );		/* drive user callback */
 					}
 					sp->ip = sp->buf;				/* reset if this was last */
@@ -496,7 +494,6 @@ static int cb_tdata( void *data, int sid, unsigned char *dgbuffer, int dglen )
 			case 0x08:	/* terminates connection */
 				if( usr_cb_closing )
 					usr_cb_closing( sp->sid );				/* disconnect pending, but the other side might take  a while to do it */
-				//fprintf( stderr, "session termination message received\n" );
 				ws_close( sid );
 				break;
 	
@@ -538,11 +535,9 @@ static int cb_conn( unsigned char *data, int sid, unsigned char *buf )
 
 	if( usr_cb_conn != NULL )
 	{
-		//fprintf( stderr, "ws_tcp driving callback with data received from %d, %d bytes (%s)\n", sp->sid, iflen, sp->buf );
 		usr_cb_conn( sp->sid, buf );
 	}
 
-	//fprintf( stderr, "websocket/conn: session accepted from: %s\n", buf );
 	return SI_OK;
 }
 
@@ -556,17 +551,14 @@ static int cb_disc( void *data, int sid )
 
 	if( (ldp = (Listen_data *) data) == NULL )
 	{
-		//fprintf( stderr, "error: disc without data\n" );
 		return SI_OK;
 	}
 
 	if( (sp = ldp->sessions[sid]) == NULL )
 	{
-		//fprintf( stderr, "error: disc sessions[%d] is null\n", sid );
 		return SI_OK;
 	}
 
-	//fprintf( stderr, "disc: session disconnected: %d\n", sid );
 	ldp->sessions[sid] = NULL;
 	if( sp->buf )
 		free( sp->buf );
@@ -635,7 +627,7 @@ static Frame *mk_frame( unsigned char *buf, int len, int type )
 
 	if( len > 4096 )
 	{
-		fprintf( stderr, "websocket/mk_frame: buffer too large, not sent: %d > 4096", len );
+		fprintf( stderr, "[ERROR] websocket/mk_frame: buffer too large, not sent: %d > 4096", len );
 		return NULL;			/* fail for now */
 	}
 	
@@ -653,7 +645,6 @@ static Frame *mk_frame( unsigned char *buf, int len, int type )
 		frame->data[1] = 126;				/* right now we support only the 126 (not 127) two byte length */
 		pd = &frame->data[4];
 		frame->data[3] = len & 0xff;
-		//fprintf( stderr, ">>>  len=%d >>8=%d  >>*&0xff=%d\n", len, len >>8, (len >>8) & 0xff );
 		frame->data[2] = (len >> 8) & 0xff;
 	}
 	
@@ -698,8 +689,6 @@ extern int ws_send( int sid, unsigned char *buf, int len )
 {
 	Frame	*frame;
 
-	//fprintf( stderr, "websocket/ws_send: sending %d bytes to session %d (%s)\n", len, sid, buf );
-
 	if( (frame = mk_frame( buf, len, WSFT_TEXT )) == NULL )
 		return 0;
 
@@ -715,7 +704,6 @@ extern void ws_close( int sid )
 {
 	Frame	*frame;
 
-	//fprintf( stderr, "sending close on sid: %d\n", sid );
 
 	if( (frame = mk_frame( "", 0, WSFT_CLOSE )) == NULL )
 		return;
