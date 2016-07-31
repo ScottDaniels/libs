@@ -42,7 +42,7 @@ $LIB_DIR/sdaniels:Q:
 
 # always out of date
 publish:V: libsi.a  $INC_DIR $LIB_DIR
-	cp libsi.a $LIB_DIR/sdainels/
+	cp libsi.a $LIB_DIR/sdaniels/
 	cp socket_if.h $INC_DIR/sdaniels/
 
 sitest:: sitest.o libsi.a
