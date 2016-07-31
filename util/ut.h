@@ -32,8 +32,8 @@
 #ifndef __ut_h_
 #define __ut_h_
 
-#include <time.h>
-#include <stdio.h>
+//#include <time.h>
+//#include <stdio.h>
 
 /* ------------- base64 encoding -------------------- */
 char *buf2base64( unsigned char *src, unsigned char *dest, int len, int dlen );
@@ -62,6 +62,8 @@ extern void ws_add_cb( int type, int ((*usr_cb)( )) );
 extern	void ws_close( int sid );
 extern void ws_listener( char *port, int ((*usr_cb)( int, unsigned char *, int, void *)), void *usr_env );
 extern int ws_send( int sid, unsigned char *buf, int len );
+extern void ws_ssl_initialise( unsigned char *cfile, unsigned char *rfile, unsigned char *kfile, unsigned char *chfile );
+
 
 #endif
 
