@@ -1,11 +1,11 @@
 name: GitHub Actions Demo
-run-name: Build Vetting
+run-name: Build Vetting user: ${{ github.actor }}
 on: [push]
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - run: echo ">>> Job triggered by: ${{ github.event_name }} owner: ${{ github.actor }}"
+      - run: echo ">>> Job triggered by: ${{ github.event_name }}"
       - run: echo ">>> Job run on: ${{ runner.os }}"
       - run: echo ">>> Branch: ${{ github.ref }} Repo: ${{ github.repository }}"
       - name: Check out repository code
