@@ -7,7 +7,7 @@ jobs:
     steps:
       - run: echo ">>> Job triggered by event= ${{ github.event_name }} user= ${{ github.actor }}"
       - run: echo ">>> Job run on ${{ runner.os }}"
-      - run: echo ">>> Branch\: ${{ github.ref }} Repo: ${{ github.repository }}"
+      - run: echo ">>> Branch\: ${{ github.ref }} Repo\: ${{ github.repository }}"
       - name: Check out repository code
         uses: actions/checkout@v4
         run: |
