@@ -1,13 +1,13 @@
 name: GitHub Actions Demo
-run-name: Build Vetting user ${{ github.actor }}
+run-name: Build Vetting
 on: [push]
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - run: echo ">>> Job triggered by event= ${{ github.event_name }}"
+      - run: echo ">>> Job triggered by event= ${{ github.event_name }} user= ${{ github.actor }}"
       - run: echo ">>> Job run on ${{ runner.os }}"
-      - run: echo ">>> Branch: ${{ github.ref }} Repo: ${{ github.repository }}"
+      - run: echo ">>> Branch\: ${{ github.ref }} Repo: ${{ github.repository }}"
       - name: Check out repository code
         uses: actions/checkout@v4
         run: |
