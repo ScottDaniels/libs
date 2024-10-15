@@ -11,8 +11,10 @@ jobs:
       - run: echo ">>> Branch= ${{ github.ref }} Repo= ${{ github.repository }}"
       - name: Check out repository code
         uses: actions/checkout@v4
-      - run: |
+      - name: Load plz
+        run: |
           curl https://get.please.build | bash
-          pleasew --version
+          source ~/.profile
+          plz --version
 
       - run: echo "Finished state= ${{ job.status }}"
