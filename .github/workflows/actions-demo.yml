@@ -11,7 +11,7 @@ jobs:
       - run: echo ">>> Branch= ${{ github.ref }} Repo= ${{ github.repository }}"
       - name: Check out repository code
         uses: actions/checkout@v4
-        run: |
+      - run: |
           curl https://get.please.build | bash
           pleasew --version
 
