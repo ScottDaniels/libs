@@ -5,7 +5,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-	  # CAUTION -- colons in strings cause errors (invalid syntax) WTF?
+      # CAUTION -- colons in strings cause errors (invalid syntax) WTF?
       - run: echo ">>> Job triggered by event= ${{ github.event_name }} user= ${{ github.actor }}"
       - run: echo ">>> Job run on ${{ runner.os }}"
       - run: echo ">>> Branch= ${{ github.ref }} Repo= ${{ github.repository }}"
