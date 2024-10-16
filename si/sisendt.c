@@ -102,7 +102,7 @@ extern int SIsendt( int fd, char *ubuf, int ulen )
 
 			SIerrno = SI_ERR_NOMEM;
 
-			if( (qptr = SInew( IOQ_BLK )) != NULL )   /* alloc a queue block */
+			if( (qptr = (ioq_blk *)SInew( IOQ_BLK )) != NULL )   /* alloc a queue block */
 			{
 				if( tpptr->sqtail == NULL )    /* if nothing on the queue */
 	 			{
@@ -126,5 +126,5 @@ extern int SIsendt( int fd, char *ubuf, int ulen )
 		}							/* end if tpptr was not found */
 	}								/* ginfo pointer was corrupted */
 
-	return( SI_ERROR );
+	return( status );
 }                           /* SIsendt */

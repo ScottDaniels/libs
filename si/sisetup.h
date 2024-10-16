@@ -56,6 +56,6 @@
 
 #define SI_RTN 1               /* prevent def of SIHANDLE in socket_if.h */
 
-#include "./sistruct.h"         /* internal definitions */
-#include "./siconst.h"          /* internal constants  and prototypes */
-#include "./socket_if.h"        /* public  defs and prototypes */
+#include "sistruct.h"         /* internal definitions */
+#include "siconst.h"          /* internal constants  and prototypes */
+#include "socket_if.h"        /* public  defs and prototypes */

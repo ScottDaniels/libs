@@ -129,21 +129,19 @@ fprintf( stderr, "siaddress: calling getaddrinfo flags=%x proto=%d family=%d tok
 int SIaddress( void *src, void **dest, int type )
 {
 	struct sockaddr_in *addr;       /* pointer to the address */
-	char *dstr;                     /* pointer to decimal string */
+	//char *dstr;                     /* pointer to decimal string */
 	unsigned char *num;             /* pointer at the address number */
 	char wbuf[256];                 /* work buffer */
-	int i;         
-	char *tok;                      /* token pointer into dotted list */
-	char *proto;                    /* pointer to protocol string*/
-	struct hostent *hip;            /* host info from name server */
-	struct servent *sip;            /* server info pointer */
+	//int i;         
+	//char *tok;                      /* token pointer into dotted list */
+	//char *proto;                    /* pointer to protocol string*/
 	int	rlen = 0;		/* return len - len of address struct */
 
 	switch( type )
 	{
 		case AC_TODOT:					/* convert from a struct to human readable */
    			addr = (struct sockaddr_in *) src;
-   			num = (char *) &addr->sin_addr.s_addr;    /* point at the long */
+   			num = (unsigned char *) &addr->sin_addr.s_addr;    /* point at the long */
 
 			if( addr->sin_family == AF_INET6 )
 			{
@@ -153,15 +151,15 @@ int SIaddress( void *src, void **dest, int type )
      				sprintf( wbuf, "%u.%u.%u.%u;%d", *(num+0), *(num+1), *(num+2), *(num+3), (int) ntohs(addr->sin_port) );
 
 			*dest = (void *) strdup( wbuf );
-			rlen = strlen( *dest );
+			rlen = strlen( (char *) *dest );
 			break;
 
   		case AC_TOADDR6:         		/* from hostname;port string to address for send etc */
-			return SIgenaddr( src, PF_INET6, IPPROTO_TCP, SOCK_STREAM, (struct sockaddr **) dest );
+			return SIgenaddr( (char *) src, PF_INET6, IPPROTO_TCP, SOCK_STREAM, (struct sockaddr **) dest );
 			break; 
 
   		case AC_TOADDR:         		/* from dotted decimal to address struct ip4 */
-			return SIgenaddr( src, PF_INET, IPPROTO_TCP, SOCK_STREAM, (struct sockaddr **) dest );
+			return SIgenaddr( (char *)src, PF_INET, IPPROTO_TCP, SOCK_STREAM, (struct sockaddr **) dest );
 			break;
 	}
 

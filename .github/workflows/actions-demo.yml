@@ -1,5 +1,5 @@
 name: GitHub Actions Demo
-run-name: Build Vetting
+run-name: Complete Build
 on: [push]
 jobs:
   build:
@@ -13,8 +13,8 @@ jobs:
         uses: actions/checkout@v4
       - name: Load plz
         run: |
-          curl https://get.please.build | bash
+          curl -s https://get.please.build | bash
           source ~/.profile
-          plz --version
+          plz build si:libsi
 
-      - run: echo "Finished state= ${{ job.status }}"
+      - run: echo ">>> Finished state= ${{ job.status }}"
