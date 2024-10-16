@@ -51,7 +51,7 @@ struct ioq_blk              /* block to queue on session when i/o waiting */
 struct callback_blk         /* defines a callback routine */
 {
 	void *cbdata;            /* pointer to be passed to the call back routine */
-	int ((*cbrtn)( ));       /* pointer to the callback routine */
+	int (*cbrtn)( );	       /* pointer to the callback routine */
 };
 
 struct tp_blk               /* transmission provider info block */

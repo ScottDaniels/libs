@@ -3,12 +3,12 @@
 INC_DIR = `echo ${INC_DIR:-/usr/local/include}`
 LIB_DIR = `echo ${LIB_DIR:-/usr/local/lib}`
 
-LD_LIBRARY_PATH = `echo $LIB_DIR/sdaniels:$LD_LIBRARY_PATH`
+LD_LIBRARY_PATH = `echo $LIB_DIR/libsi:$LD_LIBRARY_PATH`
 #SRC_DIR = `echo ${SRC_ROOT:-..}`
 MKSHELL = /bin/ksh
 CC = `echo ${CC:-gcc}`
 
-IFLAGS = `echo -I. -I${INC_DIR%/*} $IFLAGS`
+IFLAGS = `echo -I. -I${INC_DIR} $IFLAGS`
 CFLAGS = `echo ${CFLAGS:--g}`
 LFLAGS = -L $LIB_DIR
 BIN_DIR=`echo ${BIN_DIR:-$HOME/bin}`
@@ -59,8 +59,8 @@ all:V:	$ALL
 help:VQ:
 	cat <<endKat
 	Export any of the following variables to override mkfile settings: 
-		LIB_DIR -- directory path where libraries are published    (/usr/local/lib/sdaniels/)
-		INC_DIR -- directory path where header files are published (/usr/include/lib/sdaniels/)
+		LIB_DIR -- directory path where libraries are published    (/usr/local/lib/libsi/)
+		INC_DIR -- directory path where header files are published (/usr/include/lib/libsi/)
 		BIN_DIR -- directory where binaries are installed			($HOME/bin)
 		CC      -- C compiler to use (gcc)
 		CFLAGS  -- flags to pass on CC command line (-g)
