@@ -19,14 +19,14 @@ jobs:
           path: ~/.please
           key:  plz-17-8-7
 
-      - if ${{ steps.plz-package.outputs.cache-hit != 'true' }}
+      - if: ${{ steps.plz-package.outputs.cache-hit != 'true' }}
         name: loadPlz
         run: |
           curl -s https://get.please.build | bash
 
-      -name Build
-          run: |
-            source ~/.profile
-            plz build si:libsi
+      - name: Build
+        run: |
+          source ~/.profile
+          plz build si:libsi
 
       - run: echo ">>> Finished state= ${{ job.status }}"
