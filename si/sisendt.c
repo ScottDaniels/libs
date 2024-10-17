@@ -51,7 +51,6 @@
 */
 #include "sisetup.h"     /* get setup stuff */
 
-goobers // error to see what we get in ci
 extern int SIsendt( int fd, char *ubuf, int ulen )
 {
 	extern struct ginfo_blk *gptr;
