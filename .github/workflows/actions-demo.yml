@@ -11,10 +11,20 @@ jobs:
       - run: echo ">>> Branch= ${{ github.ref }} Repo= ${{ github.repository }}"
       - name: Check out repository code
         uses: actions/checkout@v4
-      - name: Load plz
+      - name: load plz cache
+        uses: actions/cache@v4
+        with:
+          path: ~/.please
+          key:  plz-17-8-7
+
+      - if ${{ steps.cache-npm.outputs.cache-hit != 'true' }}
+        name: Cache miss: loading plz
         run: |
           curl -s https://get.please.build | bash
-          source ~/.profile
-          plz build si:libsi
+
+      -name Build
+          run: |
+            source ~/.profile
+            plz build si:libsi
 
       - run: echo ">>> Finished state= ${{ job.status }}"
