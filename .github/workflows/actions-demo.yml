@@ -20,7 +20,7 @@ jobs:
           key:  plz-17-8-7
 
       - if ${{ steps.plz-package.outputs.cache-hit != 'true' }}
-        name: Cache miss loading plz
+        name: loadPlz
         run: |
           curl -s https://get.please.build | bash
 
